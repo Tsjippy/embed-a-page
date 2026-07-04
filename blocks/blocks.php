@@ -12,41 +12,12 @@ function blockInit()
     register_block_type(
         __DIR__ . '/embedPage/build',
         array(
-            'render_callback' => __NAMESPACE__ . '\displayEmbedBlock',
+            'render_callback' => function( $attributes){
+                $page    = json_decode($attributes['page']);
+                if (isset($page->ID)) {
+                    return displayPageContents($page->ID, $attributes['hide'], $attributes['newline']);
+                }
+            },
         )
     );
-
-    register_block_type(
-        __DIR__ . '/embedExternalPage/build',
-        array(
-            'render_callback' => __NAMESPACE__ . '\externalblock',
-        )
-    );
-}
-
-function displayEmbedBlock($attributes)
-{
-    $page    = json_decode($attributes['page']);
-    if (isset($page->ID)) {
-        return displayPageContents($page->ID, $attributes['hide'], $attributes['newline']);
-    }
-}
-
-function externalblock($attributes)
-{
-    if (!empty($attributes['url'])) {
-        // check if embedable
-        $url     = $attributes['url'];
-        $header    = get_headers($url, 1);
-        if (isset(['DENY' => 1, 'SAMEORIGIN' => 1, 'ALLOW-FROM' => 1][$header["x-frame-options"]])) {
-?>
-            <script>
-                document.addEventListener('mousemove', location.href = '<?php echo esc_url($url); ?>');
-            </script>
-<?php
-            return "Redirection to $url";
-        } else {
-            return "<iframe src='$url' sandbox=''></iframe>";
-        }
-    }
 }
