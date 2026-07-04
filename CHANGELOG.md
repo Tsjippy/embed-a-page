@@ -4,6 +4,7 @@
 ### Added
 
 ### Changed
+- removed embed external page block
 
 ### Fixed
 
