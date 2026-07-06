@@ -8,19 +8,6 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-// make it possible to include a page in another page
-add_shortcode('tsjippy_embed_page', __NAMESPACE__ . '\embedPost');
-function embedPost($atts)
-{
-    if (!is_array($atts) || isset($atts['id']) || !is_numeric($atts['id'])) {
-        return '';
-    }
-
-    $id        = explode('/', $atts['id']);
-
-    return displayPageContents($id);
-}
-
 function displayPageContents($id, $collapsible = false, $linebreak = false)
 {
     global $wp_query;

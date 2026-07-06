@@ -20,17 +20,15 @@ const Edit = ({ attributes, setAttributes }) => {
 		console.error('not a valid page');
 	}
 
-	console.log(parsedPage.post_content);
-
 	if (parsedPage.post_content == undefined || content == undefined) {
 		initialContent = noPostString;
 	} else {
 		initialContent = wp.element.RawHTML({ children: parsedPage.post_content });
 	}
 
-	const [searchTerm, setSearchTerm] = useState('');
+	const [searchTerm, setSearchTerm] 	= useState('');
 	const [pageContent, setPageContent] = useState(initialContent);
-	const [results, setResults] = useState(false);
+	const [results, setResults] 		= useState(false);
 
 	const SetContent = async function (id, collapsible = hide, linebreak = newline) {
 
