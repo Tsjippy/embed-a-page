@@ -4,11 +4,16 @@
 ### Added
 
 ### Changed
-- removed embed external page block
 
 ### Fixed
 
 ### Updated
+
+## [10.3.0] - 2026-07-06
+
+
+### Changed
+- removed embed external page block
 
 ## [10.2.9] - 2026-07-03
 
