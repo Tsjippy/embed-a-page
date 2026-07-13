@@ -2,7 +2,7 @@
 	"name": "tsjippy-embed-page",
 	"version": "0.1.0",
 	"description": "Embed another wp page",
-	"author": "The WordPress Contributors",
+	"author": "tsjippy",
 	"license": "GPL-2.0-or-later",
 	"main": "build/index.js",
 	"scripts": {
