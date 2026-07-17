@@ -7,6 +7,9 @@ use TSJIPPY;
 if (! defined('ABSPATH')) exit;
 
 add_action('init', __NAMESPACE__ . '\blockInit');
+/**
+ * Registers the embed page block
+ */
 function blockInit()
 {
     register_block_type(
