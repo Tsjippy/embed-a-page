@@ -2,13 +2,18 @@
 ## [Unreleased] - yyyy-mm-dd
 
 ### Added
-- tsjippy-embed-page-allow-access filter
 
 ### Changed
 
 ### Fixed
 
 ### Updated
+
+## [10.4.6] - 2026-08-03
+
+
+### Added
+- tsjippy-embed-page-allow-access filter
 
 ## [10.4.5] - 2026-07-30
 
