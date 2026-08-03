@@ -2,6 +2,7 @@
 ## [Unreleased] - yyyy-mm-dd
 
 ### Added
+- tsjippy-embed-page-allow-access filter
 
 ### Changed
 
