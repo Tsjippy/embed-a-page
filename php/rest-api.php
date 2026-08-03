@@ -21,7 +21,9 @@ function restApiInit()
         array(
             'methods'               => 'POST,GET',
             'callback'              => __NAMESPACE__ . '\findPosts',
-            'permission_callback'   => '__return_true',             // Allow public access
+            'permission_callback'   => function($wpRestRequest) {
+                return true; // Allow public access
+            },
             'args'                    => array(
                 'search'    => array(
                     'required'    => true
@@ -36,7 +38,28 @@ function restApiInit()
         array(
             'methods'               => 'POST,GET',
             'callback'              => __NAMESPACE__ . '\showPost',
-            'permission_callback'   => '__return_true',             // Allow public access
+            'permission_callback'   => function($wpRestRequest) {
+                $postId = $wpRestRequest->get_param('id');
+
+                $post = get_post($postId);
+
+                if (!$post) {
+                    return false;
+                }
+
+                if(!in_array($post->post_status, ['publish'])) {
+                    return false;
+                }
+
+                /**
+                 * Filters whether to allow access to the embed page for a specific post.
+                 *
+                 * @param bool $allowAccess Whether to allow access to the embed page.
+                 * @param \WP_Post $post The post object.
+                 * @return bool Whether to allow access to the embed page.
+                 */
+                return apply_filters('tsjippy-embed-page-allow-access', true, $post); // Allow public access
+            },
             'args'                    => array(
                 'id'    => array(
                     'required'    => true
