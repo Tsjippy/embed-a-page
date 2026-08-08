@@ -5,6 +5,7 @@
 - tsjippy-embed-page-allow-access filter
 
 ### Changed
+- block logic
 
 ### Fixed
 
