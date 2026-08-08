@@ -6,6 +6,7 @@
 
 ### Changed
 - block logic
+- plugin name
 
 ### Fixed
 
