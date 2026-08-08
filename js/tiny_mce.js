@@ -9,7 +9,7 @@ let pageEmbedHtml =
         Select a page to embed
     </label>
     <br>
-    ${pageSelect.html}
+    ${tsjippy-embed-page-pageSelect.html}
     <br>
 </div>`;
 

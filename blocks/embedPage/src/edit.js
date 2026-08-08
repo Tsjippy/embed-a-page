@@ -1,182 +1,199 @@
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls } from "@wordpress/block-editor";
-import { useState, useEffect } from "@wordpress/element";
-import { SearchControl, PanelBody, Spinner, CheckboxControl } from "@wordpress/components";
+import {
+    useBlockProps,
+    InspectorControls,
+    __experimentalLinkControl as LinkControl,
+} from '@wordpress/block-editor';
+import { RawHTML } from '@wordpress/element';
+import { useSelect } from '@wordpress/data';
+import { store as coreDataStore } from '@wordpress/core-data';
+import {
+    PanelBody,
+    CheckboxControl,
+    Button,
+    Spinner,
+} from '@wordpress/components';
 import { decodeEntities } from '@wordpress/html-entities';
-import apiFetch from "@wordpress/api-fetch";
 
-const Edit = ({ attributes, setAttributes }) => {
-	const { page, hide, newline, content } = attributes;
+const Edit = ( { attributes, setAttributes } ) => {
+    const { pageId, hide, newline } = attributes;
 
-	let noPostString = __('Please select a page...', 'tsjippy');
+    const selectedPage = useSelect(
+        ( select ) => {
+            if ( ! pageId ) {
+                return null;
+            }
 
-	let initialContent;
+            return select( coreDataStore ).getEntityRecord(
+                'postType',
+                'page',
+                pageId
+            );
+        },
+        [ pageId ]
+    );
 
-	let parsedPage = {};
+    const isLoadingPage = useSelect(
+        ( select ) => {
+            if ( ! pageId ) {
+                return false;
+            }
 
-	try {
-		parsedPage = JSON.parse(page);
-	} catch (error) {
-		console.error('not a valid page');
-	}
+            return select( coreDataStore ).isResolving(
+                'getEntityRecord',
+                [ 'postType', 'page', pageId ]
+            );
+        },
+        [ pageId ]
+    );
 
-	if (parsedPage.post_content == undefined || content == undefined) {
-		initialContent = noPostString;
-	} else {
-		initialContent = wp.element.RawHTML({ children: parsedPage.post_content });
-	}
+    const onPageChange = ( link ) => {
+        setAttributes( {
+            pageId: link?.id ? parseInt( link.id, 10 ) : 0,
+        } );
+    };
 
-	const [searchTerm, setSearchTerm] 	= useState('');
-	const [pageContent, setPageContent] = useState(initialContent);
-	const [results, setResults] 		= useState(false);
+    const clearSelectedPage = () => {
+        setAttributes( {
+            pageId: 0,
+        } );
+    };
 
-	const SetContent = async function (id, collapsible = hide, linebreak = newline) {
+    const linkValue = selectedPage
+        ? {
+              id: selectedPage.id,
+              type: 'page',
+              title: selectedPage.title?.rendered,
+              url: selectedPage.link,
+          }
+        : undefined;
 
-		setPageContent(<Spinner />);
+    let html = selectedPage?.content?.rendered || '';
 
-		initialContent = await apiFetch({
-			path: tsjippy.restApiPrefix + '/embedpage/result',
-			method: 'POST',
-			data: {
-				id: id,
-				collapsible: collapsible,
-				linebreak: linebreak
-			},
-		});
+    if ( newline ) {
+        html += '<br />';
+    }
 
-		if (initialContent.trim() == '') {
-			initialContent = "<div class='error'>Empty post</div>";
-		}
+    return (
+        <>
+            <InspectorControls>
+                <PanelBody
+                    title={ __( 'Page Embed Settings', 'tsjippy' ) }
+                >
+                    <CheckboxControl
+                        label={ __(
+                            'Only show contents on hover',
+                            'tsjippy'
+                        ) }
+                        checked={ hide }
+                        onChange={ ( checked ) =>
+                            setAttributes( {
+                                hide: checked,
+                            } )
+                        }
+                    />
 
-		setAttributes({ content: initialContent });
+                    <CheckboxControl
+                        label={ __( 'Add a line break', 'tsjippy' ) }
+                        checked={ newline }
+                        onChange={ ( checked ) =>
+                            setAttributes( {
+                                newline: checked,
+                            } )
+                        }
+                    />
 
-		setPageContent(wp.element.RawHTML({ children: initialContent }));
-	}
+                    <LinkControl
+                        value={ linkValue }
+                        onChange={ onPageChange }
+                        forceIsEditingLink
+                        createSuggestion={ false }
+                        settings={ [] }
+                        searchInputPlaceholder={ __(
+                            'Search for a page',
+                            'tsjippy'
+                        ) }
+                        suggestionsQuery={ {
+                            type: 'post',
+                            subtype: 'page',
+                        } }
+                    />
 
-	useEffect(
-		() => {
-			async function getResults() {
-				setResults(false);
-				const response = await apiFetch({
-					path: tsjippy.restApiPrefix + '/embedpage/find',
-					method: 'POST',
-					data: {
-						search: searchTerm
-					},
-				});
-				setResults(response);
-			}
-			getResults();
-		},
-		[searchTerm]
-	);
+                    { selectedPage && (
+                        <>
+                            <p>
+                                { __(
+                                    'Currently embedded page:',
+                                    'tsjippy'
+                                ) }{' '}
+                                <strong>
+                                    { decodeEntities(
+                                        selectedPage.title?.rendered ||
+                                            __( '(Untitled)', 'tsjippy' )
+                                    ) }
+                                </strong>
+                            </p>
 
-	const PageSelected = async function (selected, post) {
-		if (selected) {
-			SetContent(post.ID);
-			setAttributes({ page: JSON.stringify(post) });
-		} else {
-			setAttributes({ page: null });
-			setPageContent(noPostString);
-		}
-	}
+                            <p>
+                                <a
+									href={ `${ tsjippy.baseUrl }/wp-admin/post.php?post=${ pageId }&action=edit` }
+									target="_blank"
+									rel="noreferrer"
+								>
+									{ __( 'Edit embedded page here', 'tsjippy' ) }
+								</a>
+                            </p>
 
-	const VisibilityChanged = async function (checked) {
-		setAttributes({ hide: checked });
+                            <Button
+                                variant="secondary"
+                                onClick={ clearSelectedPage }
+                            >
+                                { __(
+                                    'Remove embedded page',
+                                    'tsjippy'
+                                ) }
+                            </Button>
+                        </>
+                    ) }
+                </PanelBody>
+            </InspectorControls>
 
-		SetContent(parsedPage.ID, checked);
-	}
+            <div { ...useBlockProps() }>
+                { 
+					! pageId && 
+					<LinkControl
+                        value={ linkValue }
+                        onChange={ onPageChange }
+                        forceIsEditingLink
+                        createSuggestion={ false }
+                        settings={ [] }
+                        searchInputPlaceholder={ __(
+                            'Search for a page',
+                            'tsjippy'
+                        ) }
+                        suggestionsQuery={ {
+                            type: 'post',
+                            subtype: 'page',
+                        } }
+                    /> 
+				}
 
-	const LineBreakChanged = async function (checked) {
-		setAttributes({ newline: checked });
+                { isLoadingPage && <Spinner /> }
 
-		SetContent(parsedPage.ID, hide, checked);
-	}
-
-	const BuildCheckboxControls = function () {
-		if (page == '{}') {
-			return '';
-		}
-
-		return (
-			<>
-				Currently embeded page:
-				<CheckboxControl
-					label={decodeEntities(parsedPage.post_title)}
-					onChange={(value) => PageSelected(value, parsedPage)}
-					checked={true}
-				/>
-				<a href={`${tsjippy.baseUrl}/wp-admin/post.php?post=${parsedPage.ID}&action=edit`}>Edit embeded page here</a><br></br><br></br>
-			</>
-		)
-	}
-
-	const SearchResults = function ({ pageList }) {
-		if (!results) {
-			return (
-				<>
-					<Spinner />
-					<br></br>
-				</>
-			);
-		}
-
-		if (!pageList?.length) {
-			if (!searchTerm) {
-				return '';
-			}
-			return <div> {__('No search results', 'tsjippy')}</div>;
-		}
-
-		return results?.map((p) => {
-			return (
-				<CheckboxControl
-					label={decodeEntities(p.post_title)}
-					onChange={(value) => PageSelected(value, p)}
-					checked={attributes.page == p}
-				/>)
-		})
-	}
-
-	const SearchPage = (hideIfFound) => {
-		if (pageContent != noPostString && hideIfFound) {
-			return '';
-		}
-		return (
-			<>
-				< SearchControl onChange={setSearchTerm} value={searchTerm} autoFocus={true} />
-				< SearchResults pageList={results} />
-			</>
-		)
-	}
-
-	return (
-		<>
-			<InspectorControls>
-				<PanelBody title={__('Page Embed Settings', 'tsjippy')}>
-					<CheckboxControl
-						label={__('Only show contents on hover')}
-						onChange={(checked) => VisibilityChanged(checked)}
-						checked={hide}
-					/>
-
-					<CheckboxControl
-						label={__('Add a line break')}
-						onChange={(checked) => LineBreakChanged(checked)}
-						checked={newline}
-					/>
-
-					< BuildCheckboxControls />
-					<i>{__('Use searchbox below to search for a page', 'tsjippy')}</i>
-					{SearchPage(false)}
-				</PanelBody>
-			</InspectorControls>
-			<div {...useBlockProps()}>
-				{SearchPage(true)}
-				{pageContent}
-			</div>
-		</>
-	);
-}
+                { ! isLoadingPage && html && (
+                    <div
+                        className={
+                            hide
+                                ? 'tsjippy-embed-page tsjippy-embed-page--hover'
+                                : 'tsjippy-embed-page'
+                        }
+                    >
+                        <RawHTML>{ html }</RawHTML>
+                    </div>
+                ) }
+            </div>
+        </>
+    );
+};
 
 export default Edit;

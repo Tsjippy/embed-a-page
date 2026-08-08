@@ -45,13 +45,13 @@ function addPlugin($plugins)
     //Add extra variables to the main.js script
     wp_localize_script(
         'tsjippy_script',
-        'pageSelect',
+        'tsjippy-embed-page-pageSelect',
         ['html' => TSJIPPY\pageSelect('page-selector')]
     );
 
     wp_localize_script(
         'tsjippy_admin_js',
-        'pageSelect',
+        'tsjippy-embed-page-pageSelect',
         ['html' => TSJIPPY\pageSelect('page-selector')]
     );
 

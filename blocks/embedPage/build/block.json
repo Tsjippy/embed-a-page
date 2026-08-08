@@ -10,9 +10,9 @@
   "editorScript": "file:./index.js",
   "style": "file:./style-index.css",
   "attributes": {
-    "page": {
-      "type": "string",
-      "default": "{}"
+    "pageId": {
+      "type": "number",
+      "default": 0
     },
     "hide": {
       "type": "boolean",

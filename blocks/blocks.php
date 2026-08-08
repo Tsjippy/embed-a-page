@@ -16,9 +16,8 @@ function blockInit()
         __DIR__ . '/embedPage/build',
         [
             'render_callback' => function( $attributes){
-                $page    = json_decode($attributes['page']);
-                if (isset($page->ID)) {
-                    return displayPageContents($page->ID, $attributes['hide'], $attributes['newline']);
+                if (!empty($attributes['pageId'])) {
+                    return displayPageContents($attributes['pageId'], $attributes['hide'], $attributes['newline']);
                 }
             }
         ]
