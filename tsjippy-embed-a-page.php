@@ -13,7 +13,7 @@ use TSJIPPY;
  * Requires at least:    6.3
  * Requires PHP:         8.3
  * Tested up to:         7.0
- * Plugin URI:           https://github.com/Tsjippy/embedpage/
+ * Plugin URI:           https://github.com/Tsjippy/embed-a-page/
  * Tested:               7.0
  * TextDomain:           tsjippy
  * Requires Plugins:    
