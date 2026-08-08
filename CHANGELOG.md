@@ -2,15 +2,22 @@
 ## [Unreleased] - yyyy-mm-dd
 
 ### Added
+
+### Changed
+
+### Fixed
+
+### Updated
+
+## [10.4.8] - 2026-08-08
+
+
+### Added
 - tsjippy-embed-page-allow-access filter
 
 ### Changed
 - block logic
 - plugin name
-
-### Fixed
-
-### Updated
 
 ## [10.4.5] - 2026-07-30
 
