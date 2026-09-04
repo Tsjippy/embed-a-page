@@ -4,6 +4,7 @@
 ### Added
 
 ### Changed
+- removed tiny_mce plugin
 
 ### Fixed
 
