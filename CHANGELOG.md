@@ -4,11 +4,16 @@
 ### Added
 
 ### Changed
-- removed tiny_mce plugin
 
 ### Fixed
 
 ### Updated
+
+## [10.5.8] - 2026-09-04
+
+
+### Changed
+- removed tiny_mce plugin
 
 ## [10.5.7] - 2026-09-03
 
