@@ -15,10 +15,16 @@ function blockInit()
     register_block_type(
         __DIR__ . '/embedPage/build',
         [
-            'render_callback' => function( $attributes){
-                if (!empty($attributes['pageId'])) {
-                    return displayPageContents($attributes['pageId'], $attributes['hide'], $attributes['newline']);
+            'render_callback' => function ( $attributes ) {
+                if ( empty( $attributes['pageId'] ) ) {
+                    return '';
                 }
+
+                return displayPageContents(
+                    $attributes['pageId'],
+                    $attributes['hide'] ?? false,
+                    $attributes['newline'] ?? false
+                );
             }
         ]
     );

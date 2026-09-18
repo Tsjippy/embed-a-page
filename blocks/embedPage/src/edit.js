@@ -14,6 +14,7 @@ import {
     Spinner,
 } from '@wordpress/components';
 import { decodeEntities } from '@wordpress/html-entities';
+import { addQueryArgs } from '@wordpress/url';
 
 const Edit = ( { attributes, setAttributes } ) => {
     const { pageId, hide, newline } = attributes;
@@ -73,6 +74,11 @@ const Edit = ( { attributes, setAttributes } ) => {
     if ( newline ) {
         html += '<br />';
     }
+
+    const editPostUrl = pageId
+        ? `${window.wpApiSettings?.adminUrl}post.php?post=${pageId}&action=edit`
+        : '';
+    console.log( editPostUrl );
 
     return (
         <>
@@ -136,7 +142,7 @@ const Edit = ( { attributes, setAttributes } ) => {
 
                             <p>
                                 <a
-									href={ `${ tsjippy.baseUrl }/wp-admin/post.php?post=${ pageId }&action=edit` }
+									href={ `${editPostUrl}?post=${ pageId }&action=edit` }
 									target="_blank"
 									rel="noreferrer"
 								>
