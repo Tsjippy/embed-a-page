@@ -7,13 +7,13 @@ use TSJIPPY;
 /**
  * Plugin Name:          Tsjippy Embed A Page
  * Description:          This plugin makes it possible to display the contents of another page in a page.<br>This can be done by using the frontend contend plugin or by using the 'embed_page' shortcode.<br>Use like this: <code>[embed_page id=SOMEPAGEID]</code>
- * Version:              10.6.5
+ * Version:              10.6.6
  * Author:               Ewald Harmsen
  * AuthorURI:            harmseninnigeria.nl
  * Requires at least:    6.3
  * Requires PHP:         8.3
  * Plugin URI:           https://github.com/Tsjippy/embed-a-page/
- * Tested:               7.1
+ * Tested:               7.1.1
  * TextDomain:           tsjippy
  * Requires Plugins:    
  * License: GPLv2 or later
