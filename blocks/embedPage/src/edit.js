@@ -78,7 +78,6 @@ const Edit = ( { attributes, setAttributes } ) => {
     const editPostUrl = pageId
         ? `${window.wpApiSettings?.adminUrl}post.php?post=${pageId}&action=edit`
         : '';
-    console.log( editPostUrl );
 
     return (
         <>
